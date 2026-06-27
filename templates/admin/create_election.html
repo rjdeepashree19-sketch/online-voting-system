@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">➕ Create Election</h2>
+<div class="card shadow p-4">
+  <form method="POST">
+    <div class="mb-3">
+      <label>Election Title</label>
+      <input type="text" name="title" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label>Description</label>
+      <textarea name="description" class="form-control" rows="2"></textarea>
+    </div>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label>Start Time</label>
+        <input type="datetime-local" name="start_time" class="form-control" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label>End Time</label>
+        <input type="datetime-local" name="end_time" class="form-control" required>
+      </div>
+    </div>
+
+    <h5 class="mt-3">Candidates</h5>
+    <div id="candidates">
+      <div class="row mb-2">
+        <div class="col-md-5">
+          <input type="text" name="candidate_name" class="form-control" placeholder="Candidate Name" required>
+        </div>
+        <div class="col-md-7">
+          <input type="text" name="candidate_desc" class="form-control" placeholder="Short Description">
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-outline-secondary btn-sm mb-3" onclick="addCandidate()">
+      ➕ Add Another Candidate
+    </button>
+
+    <br>
+    <button type="submit" class="btn btn-primary w-100">Create Election</button>
+  </form>
+</div>
+
+<script>
+function addCandidate() {
+    const div = document.getElementById("candidates");
+    div.innerHTML += `
+    <div class="row mb-2">
+        <div class="col-md-5">
+            <input type="text" name="candidate_name" class="form-control" placeholder="Candidate Name">
+        </div>
+        <div class="col-md-7">
+            <input type="text" name="candidate_desc" class="form-control" placeholder="Short Description">
+        </div>
+    </div>`;
+}
+</script>
+{% endblock %}

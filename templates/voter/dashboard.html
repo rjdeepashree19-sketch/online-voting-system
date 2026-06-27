@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">🗳️ Available Elections</h2>
+
+{% if elections %}
+    {% for e in elections %}
+    <div class="card shadow mb-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ e.title }}</h5>
+            <p class="text-muted">{{ e.description }}</p>
+            <p class="small">
+                ⏰ Ends: {{ e.end_time.strftime('%d %b %Y %H:%M') }}
+            </p>
+            {% if e._id|string in voted_ids %}
+                <span class="badge bg-success fs-6">✅ You have voted</span>
+                <a href="/results/{{ e._id }}" class="btn btn-outline-primary btn-sm ms-2">
+                    View Results
+                </a>
+            {% else %}
+                <a href="/vote/{{ e._id }}" class="btn btn-primary">
+                    🗳️ Vote Now
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="alert alert-info">No active elections at the moment.</div>
+{% endif %}
+{% endblock %}

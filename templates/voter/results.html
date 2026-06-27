@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-md-8">
+    <h3 class="mb-4">📊 Results — {{ election.title }}</h3>
+
+    {% if winner and total_votes > 0 %}
+    <div class="alert alert-success text-center fs-5">
+        🏆 Leading: <strong>{{ winner.name }}</strong>
+        with {{ winner.votes }} vote(s)
+    </div>
+    {% endif %}
+
+    {% for candidate in election.candidates %}
+    {% set percentage = ((candidate.votes / total_votes) * 100) | round(1) if total_votes > 0 else 0 %}
+    <div class="mb-3">
+        <div class="d-flex justify-content-between">
+            <strong>{{ candidate.name }}</strong>
+            <span>{{ candidate.votes }} votes ({{ percentage }}%)</span>
+        </div>
+        <div class="progress" style="height: 25px;">
+            <div class="progress-bar bg-primary" style="width: {{ percentage }}%">
+                {{ percentage }}%
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <p class="text-muted mt-3">Total votes cast: {{ total_votes }}</p>
+    <a href="/dashboard" class="btn btn-outline-primary mt-2">← Back to Elections</a>
+</div>
+</div>
+{% endblock %}

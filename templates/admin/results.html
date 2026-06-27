@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>📊 {{ election.title }} — Results</h2>
+    <a href="/admin/elections" class="btn btn-outline-secondary">← Back</a>
+</div>
+
+{% if winner and total_votes > 0 %}
+<div class="alert alert-success text-center fs-5">
+    🏆 Winner: <strong>{{ winner.name }}</strong>
+    with {{ winner.votes }} vote(s) out of {{ total_votes }}
+</div>
+{% elif total_votes == 0 %}
+<div class="alert alert-warning text-center">
+    No votes cast yet.
+</div>
+{% endif %}
+
+<!-- Chart -->
+<div class="card shadow p-4 mb-4">
+    <canvas id="resultsChart" height="100"></canvas>
+</div>
+
+<!-- Progress Bars -->
+<div class="card shadow p-4">
+    <h5 class="mb-3">Vote Breakdown</h5>
+    {% for candidate in election.candidates %}
+    {% set percentage = ((candidate.votes / total_votes) * 100) | round(1) if total_votes > 0 else 0 %}
+    <div class="mb-3">
+        <div class="d-flex justify-content-between">
+            <strong>{{ candidate.name }}</strong>
+            <span>{{ candidate.votes }} votes ({{ percentage }}%)</span>
+        </div>
+        <div class="progress" style="height: 30px;">
+            <div class="progress-bar bg-primary fs-6" style="width: {{ percentage }}%">
+                {{ percentage }}%
+            </div>
+        </div>
+        <small class="text-muted">{{ candidate.description }}</small>
+    </div>
+    {% endfor %}
+    <hr>
+    <p class="fw-bold">Total votes cast: {{ total_votes }}</p>
+    <p class="text-muted small">
+        Election period: {{ election.start_time.strftime('%d %b %Y %H:%M') }} 
+        → {{ election.end_time.strftime('%d %b %Y %H:%M') }}
+    </p>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('resultsChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [{% for c in election.candidates %}"{{ c.name }}",{% endfor %}],
+            datasets: [{
+                label: 'Votes',
+                data: [{% for c in election.candidates %}{{ c.votes }},{% endfor %}],
+                backgroundColor: [
+                    '#0d6efd', '#198754', '#ffc107',
+                    '#dc3545', '#0dcaf0', '#6f42c1'
+                ],
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: 'Vote Count per Candidate',
+                    font: { size: 18 }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

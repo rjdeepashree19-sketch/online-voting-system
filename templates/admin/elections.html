@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">📋 All Elections</h2>
+<a href="/admin/create-election" class="btn btn-primary mb-3">➕ Create New</a>
+
+{% if elections %}
+<div class="table-responsive">
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Title</th>
+            <th>Candidates</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for e in elections %}
+        <tr>
+            <td>{{ e.title }}</td>
+            <td>{{ e.candidates | length }}</td>
+            <td>{{ e.start_time.strftime('%d %b %Y %H:%M') }}</td>
+            <td>{{ e.end_time.strftime('%d %b %Y %H:%M') }}</td>
+            <td><span class="badge bg-success">{{ e.status }}</span></td>
+            <td>
+                <a href="/admin/results/{{ e._id }}" class="btn btn-info btn-sm">
+                    📊 Results
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% else %}
+<p class="text-muted">No elections created yet.</p>
+{% endif %}
+{% endblock %}

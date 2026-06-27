@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-md-7">
+<div class="card shadow p-4">
+    <h3 class="mb-1">🗳️ {{ election.title }}</h3>
+    <p class="text-muted mb-4">{{ election.description }}</p>
+
+    <form method="POST">
+        <h5 class="mb-3">Select your candidate:</h5>
+        {% for candidate in election.candidates %}
+        <div class="card mb-3 border-primary">
+            <div class="card-body d-flex align-items-center">
+                <input type="radio" name="candidate"
+                       value="{{ candidate.name }}"
+                       id="c{{ loop.index }}"
+                       class="form-check-input me-3"
+                       required>
+                <label for="c{{ loop.index }}" class="w-100" style="cursor:pointer">
+                    <strong>{{ candidate.name }}</strong>
+                    <p class="text-muted mb-0 small">{{ candidate.description }}</p>
+                </label>
+            </div>
+        </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-success w-100 mt-2">
+            ✅ Confirm Vote
+        </button>
+        <a href="/dashboard" class="btn btn-outline-secondary w-100 mt-2">
+            Cancel
+        </a>
+    </form>
+</div>
+</div>
+</div>
+{% endblock %}

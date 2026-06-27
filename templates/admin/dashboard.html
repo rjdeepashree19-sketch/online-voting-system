@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">🛠️ Admin Dashboard</h2>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary shadow text-center p-3">
+            <h3>{{ total_users }}</h3>
+            <p class="mb-0">Total Voters</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success shadow text-center p-3">
+            <h3>{{ total_elections }}</h3>
+            <p class="mb-0">Total Elections</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-warning shadow text-center p-3">
+            <h3>{{ active_elections }}</h3>
+            <p class="mb-0">Active Elections</p>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4 d-flex gap-3">
+    <a href="/admin/create-election" class="btn btn-primary">➕ Create Election</a>
+    <a href="/admin/elections" class="btn btn-success">📋 View Elections</a>
+    <a href="/admin/voters" class="btn btn-secondary">👥 View Voters</a>
+</div>
+{% endblock %}
