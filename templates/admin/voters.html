@@ -1,34 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
-<h2 class="mb-4">📋 All Elections</h2>
-<a href="/admin/create-election" class="btn btn-primary mb-3">➕ Create New</a>
+<h2 class="mb-4">👥 Registered Voters</h2>
 
-{% if elections %}
-<div class="table-responsive">
+{% if voters %}
 <table class="table table-bordered table-hover">
     <thead class="table-dark">
         <tr>
-            <th>Title</th>
-            <th>Candidates</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Status</th>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Registered On</th>
         </tr>
     </thead>
     <tbody>
-    {% for e in elections %}
+    {% for v in voters %}
         <tr>
-            <td>{{ e.title }}</td>
-            <td>{{ e.candidates | length }}</td>
-            <td>{{ e.start_time.strftime('%d %b %Y %H:%M') }}</td>
-            <td>{{ e.end_time.strftime('%d %b %Y %H:%M') }}</td>
-            <td><span class="badge bg-success">{{ e.status }}</span></td>
+            <td>{{ loop.index }}</td>
+            <td>{{ v.name }}</td>
+            <td>{{ v.email }}</td>
+            <td>{{ v.created_at.strftime('%d %b %Y') }}</td>
         </tr>
     {% endfor %}
     </tbody>
 </table>
-</div>
 {% else %}
-<p class="text-muted">No elections created yet.</p>
+<p class="text-muted">No voters registered yet.</p>
 {% endif %}
 {% endblock %}
