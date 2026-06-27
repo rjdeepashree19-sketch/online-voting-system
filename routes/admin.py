@@ -56,8 +56,8 @@ def create_election():
         elections_col.insert_one({
             "title": title,
             "description": description,
-            "start_time": datetime.fromisoformat(start_time),
-            "end_time": datetime.fromisoformat(end_time),
+            "start_time": datetime.strptime(start_time, "%Y-%m-%dT%H:%M"),
+            "end_time": datetime.strptime(end_time, "%Y-%m-%dT%H:%M"),
             "candidates": candidates,
             "status": "active",
             "created_at": datetime.utcnow()
