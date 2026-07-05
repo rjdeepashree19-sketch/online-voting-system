@@ -21,25 +21,17 @@ users_col = db["users"]
 def send_otp_email(email, otp):
     try:
         import smtplib
-        from email.mime.multipart import MIMEMultipart
         from email.mime.text import MIMEText
-        msg = MIMEMultipart()
+        msg = MIMEText(f"Your OTP is: {otp}\nValid for 5 minutes.")
         msg["Subject"] = "Your OTP - Online Voting System"
         msg["From"] = os.getenv("MAIL_EMAIL")
         msg["To"] = email
-        msg.attach(MIMEText(f"Your OTP is: {otp}\nValid for 5 minutes.", "plain"))
-        with smtplib.SMTP("smtp.gmail.com", 587, timeout=10) as server:
+        with smtplib.SMTP("smtp-relay.brevo.com", 587, timeout=15) as server:
             server.starttls()
-            server.login(os.getenv("MAIL_EMAIL"), os.getenv("MAIL_PASSWORD"))
+            server.login(os.getenv("BREVO_LOGIN"), os.getenv("BREVO_PASSWORD"))
             server.send_message(msg)
     except Exception as e:
         print(f"Email error: {e}")
-
-def send_otp(email, otp):
-    import threading
-    thread = threading.Thread(target=send_otp_email, args=(email, otp))
-    thread.daemon = True
-    thread.start()
 
 # ── Register ──────────────────────────────────────────────
 @auth_bp.route("/register", methods=["GET", "POST"])
