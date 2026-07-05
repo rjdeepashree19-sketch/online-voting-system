@@ -18,24 +18,29 @@ db = client["voting_system"]
 users_col = db["users"]
 
 # ── OTP Email Sender ──────────────────────────────────────
+def send_otp_email(email, otp):
+    try:
+        import smtplib
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.text import MIMEText
+        msg = MIMEMultipart()
+        msg["Subject"] = "Your OTP - Online Voting System"
+        msg["From"] = os.getenv("MAIL_EMAIL")
+        msg["To"] = email
+        msg.attach(MIMEText(f"Your OTP is: {otp}\nValid for 5 minutes.", "plain"))
+        with smtplib.SMTP("smtp.gmail.com", 587, timeout=10) as server:
+            server.starttls()
+            server.login(os.getenv("MAIL_EMAIL"), os.getenv("MAIL_PASSWORD"))
+            server.send_message(msg)
+    except Exception as e:
+        print(f"Email error: {e}")
+
 def send_otp(email, otp):
-    import smtplib
-    from email.mime.multipart import MIMEMultipart
-    from email.mime.text import MIMEText
-    
-    msg = MIMEMultipart()
-    msg["Subject"] = "Your OTP - Online Voting System"
-    msg["From"] = os.getenv("MAIL_EMAIL")
-    msg["To"] = email
-    msg.attach(MIMEText(f"Your OTP is: {otp}\nValid for 5 minutes.", "plain"))
-    
-    with smtplib.SMTP("smtp.gmail.com", 587) as server:
-        server.ehlo()
-        server.starttls()
-        server.ehlo()
-        server.login(os.getenv("MAIL_EMAIL"), os.getenv("MAIL_PASSWORD"))
-        server.send_message(msg)
-        
+    import threading
+    thread = threading.Thread(target=send_otp_email, args=(email, otp))
+    thread.daemon = True
+    thread.start()
+
 # ── Register ──────────────────────────────────────────────
 @auth_bp.route("/register", methods=["GET", "POST"])
 def register():
