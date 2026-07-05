@@ -19,14 +19,23 @@ users_col = db["users"]
 
 # ── OTP Email Sender ──────────────────────────────────────
 def send_otp(email, otp):
-    msg = MIMEText(f"Your OTP for Online Voting System is: {otp}\nValid for 5 minutes.")
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+    
+    msg = MIMEMultipart()
     msg["Subject"] = "Your OTP - Online Voting System"
     msg["From"] = os.getenv("MAIL_EMAIL")
     msg["To"] = email
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+    msg.attach(MIMEText(f"Your OTP is: {otp}\nValid for 5 minutes.", "plain"))
+    
+    with smtplib.SMTP("smtp.gmail.com", 587) as server:
+        server.ehlo()
+        server.starttls()
+        server.ehlo()
         server.login(os.getenv("MAIL_EMAIL"), os.getenv("MAIL_PASSWORD"))
         server.send_message(msg)
-
+        
 # ── Register ──────────────────────────────────────────────
 @auth_bp.route("/register", methods=["GET", "POST"])
 def register():
