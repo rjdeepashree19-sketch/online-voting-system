@@ -26,8 +26,8 @@ def send_otp_email(email, otp):
         msg["Subject"] = "Your OTP - Online Voting System"
         msg["From"] = os.getenv("MAIL_EMAIL")
         msg["To"] = email
-        with smtplib.SMTP("smtp-relay.brevo.com", 587, timeout=15) as server:
-            server.starttls()
+        with smtplib.SMTP_SSL("smtp-relay.brevo.com", 465, timeout=15) as server:
+            
             server.login(os.getenv("BREVO_LOGIN"), os.getenv("BREVO_PASSWORD"))
             server.send_message(msg)
     except Exception as e:
