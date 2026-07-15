@@ -64,8 +64,7 @@ def register():
             thread = threading.Thread(target=send_otp_email, args=(email, otp))
             thread.daemon = True
             thread.start()
-
-    return render_template("register.html")
+            return redirect(url_for("auth.verify_otp"))
 
 # ── OTP Verification ──────────────────────────────────────
 @auth_bp.route("/verify-otp", methods=["GET", "POST"])
