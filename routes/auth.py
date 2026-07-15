@@ -19,19 +19,21 @@ users_col = db["users"]
 
 # ── OTP Email Sender ──────────────────────────────────────
 def send_otp_email(email, otp):
-    try:
-        import smtplib
-        from email.mime.text import MIMEText
-        msg = MIMEText(f"Your OTP is: {otp}\nValid for 5 minutes.")
-        msg["Subject"] = "Your OTP - Online Voting System"
-        msg["From"] = os.getenv("MAIL_EMAIL")
-        msg["To"] = email
-        with smtplib.SMTP_SSL("smtp-relay.brevo.com", 465, timeout=15) as server:
-            
-            server.login(os.getenv("BREVO_LOGIN"), os.getenv("BREVO_PASSWORD"))
-            server.send_message(msg)
-    except Exception as e:
-        print(f"Email error: {e}")
+    import requests
+    url = "https://api.brevo.com/v3/smtp/email"
+    headers = {
+        "accept": "application/json",
+        "api-key": os.getenv("BREVO_API_KEY"),
+        "content-type": "application/json"
+    }
+    data = {
+        "sender": {"name": "Online Voting System", "email": os.getenv("MAIL_EMAIL")},
+        "to": [{"email": email}],
+        "subject": "Your OTP - Online Voting System",
+        "textContent": f"Your OTP is: {otp}\nValid for 5 minutes."
+    }
+    response = requests.post(url, json=data, headers=headers)
+    print(f"Email status: {response.status_code}, {response.text}")
 
 # ── Register ──────────────────────────────────────────────
 @auth_bp.route("/register", methods=["GET", "POST"])
