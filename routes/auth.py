@@ -41,16 +41,13 @@ def register():
         email = request.form["email"]
         password = request.form["password"]
 
-        # Check if email already exists
         if users_col.find_one({"email": email}):
             flash("Email already registered!", "danger")
             return redirect(url_for("auth.register"))
 
-        # Generate OTP
         otp = str(random.randint(100000, 999999))
         expiry = datetime.utcnow() + timedelta(minutes=5)
 
-        # Temporarily store user data in session
         session["temp_user"] = {
             "name": name,
             "email": email,
@@ -59,12 +56,10 @@ def register():
             "expiry": expiry.isoformat()
         }
 
-        def send_otp(email, otp):
-            import threading
-            thread = threading.Thread(target=send_otp_email, args=(email, otp))
-            thread.daemon = True
-            thread.start()
-            return redirect(url_for("auth.verify_otp"))
+        send_otp_email(email, otp)  # Call directly, no nested function
+        return redirect(url_for("auth.verify_otp"))
+
+    return render_template("register.html")
 
 # ── OTP Verification ──────────────────────────────────────
 @auth_bp.route("/verify-otp", methods=["GET", "POST"])
