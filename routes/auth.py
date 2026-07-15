@@ -59,9 +59,11 @@ def register():
             "expiry": expiry.isoformat()
         }
 
-        send_otp(email, otp)
-        flash("OTP sent to your email!", "info")
-        return redirect(url_for("auth.verify_otp"))
+        def send_otp(email, otp):
+            import threading
+            thread = threading.Thread(target=send_otp_email, args=(email, otp))
+            thread.daemon = True
+            thread.start()
 
     return render_template("register.html")
 
